@@ -17,6 +17,7 @@ Building software:
 2. In the created directory run (done)
 
    cmake <path_to_the_source_folder>
+   
    make
 
 
