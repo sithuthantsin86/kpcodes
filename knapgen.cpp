@@ -24,11 +24,11 @@ public:
 	void Uncorrelated_instances_with_similar_weights(int number_of_items, int R, int num_instances);
 	void printPair(FILE* f, int *p, int *w, int N, int C);
 	string file_name(string method, int N, int R, int C, int num_instance);
-	void generator(string method, int number_of_items, int R, int num_instances);
 };
 Instances_generator::Instances_generator(int number_of_items){
 	sum=0; min=0; capacity=0; C=0;
 	alpha[0]=0.1; alpha[1]=0.25; alpha[2]=0.5; alpha[3]=0.75; alpha[4]=0.9;
+	mkdir("inputs", 0777);
 	p=(int *)malloc(number_of_items*sizeof(int));
 	if(p == NULL){cerr<<"Error : Your size is too much.\n";exit(1);}
 	w=(int *)malloc(number_of_items*sizeof(int));
