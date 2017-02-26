@@ -7,15 +7,14 @@
 #include <sys/stat.h>
 #include <chrono>
 #include <random>
+#include <vector>
 using namespace std;
-const int alpha_size = 5;
-
 class Instances_generator {
-    int *p, *w, sum, min, capacity, C;
-    float alpha[5];
+    int *p, *w, sum, min, capacity, C, alpha_size;
     FILE *a, *b, *c, *d, *e, *f, *g;
+    vector<float> alpha;
 public:
-    Instances_generator(int number_of_items);
+    Instances_generator(int number_of_items, int a_size);
     void Uncorrelated_data_instances(int number_of_items, int R, int num_instances);
     void Weekly_correlated_instances(int number_of_items, int R, int num_instances);
     void Strongly_correlated_instances(int number_of_items, int R, int num_instances);
@@ -27,17 +26,17 @@ public:
     string file_name(string method, int N, int R, int C, int num_instance);
 };
 
-Instances_generator::Instances_generator(int number_of_items) {
+Instances_generator::Instances_generator(int number_of_items, int a_size){
     sum = 0;
     min = 0;
     capacity = 0;
     C = 0;
-    alpha[0] = 0.1;
-    alpha[1] = 0.25;
-    alpha[2] = 0.5;
-    alpha[3] = 0.75;
-    alpha[4] = 0.9;
+    alpha_size = a_size;
     mkdir("inputs", 0777);
+    for(int i=0; i<alpha_size; i++){
+    	float temp=float(i+1)/float(alpha_size+1);
+    	alpha.push_back (temp);
+    }
     p = (int *) malloc(number_of_items * sizeof (int));
     if (p == NULL) {
         cerr << "Error : Your size is too much.\n";
@@ -287,20 +286,20 @@ void Instances_generator::Uncorrelated_instances_with_similar_weights(int number
 int main(int argc, char* argv[]) {
     string method;
     struct stat st;
-    int num_instances;
-    int number_of_items, R;
+    int num_instances, number_of_items, R, a_size;
     if (argc >= 2) {
         method = argv[1];
-        if (argc == 5) {
+        if (argc == 6) {
             number_of_items = atoi(argv[2]);
             R = atoi(argv[3]);
             num_instances = atoi(argv[4]);
+            a_size = atoi(argv[5]);
         }
     } else {
-        fprintf(stderr, "Usage: %s <method> <number of items> <range> <How many instances for each alpha value>\n---Methods---\nUC = Uncorrelated_data_instances\nWC = Weekly_correlated_instances\nSC = Strongly_correlated_instances\nISC = Inverse_strongly_correlated_instances\nASC = Almost_strongly_correlated_instances\nSS = Subset_sum_instances\nUCS = Uncorrelated_instances_with_similar_weights\n", argv[0]);
+        fprintf(stderr, "Usage: %s <method> <number of items> <range> <How many instances for each alpha value> <Alpha size>\n---Methods---\nUC = Uncorrelated_data_instances\nWC = Weekly_correlated_instances\nSC = Strongly_correlated_instances\nISC = Inverse_strongly_correlated_instances\nASC = Almost_strongly_correlated_instances\nSS = Subset_sum_instances\nUCS = Uncorrelated_instances_with_similar_weights\n", argv[0]);
         exit(-1);
     }
-    Instances_generator IG(number_of_items);
+    Instances_generator IG(number_of_items, a_size);
     if (method == "UC" || method == "ALL") {
         if (stat("inputs/Uncorrelated_data_instances", &st) == 0)system("rm -r inputs/Uncorrelated_data_instances");
         IG.Uncorrelated_data_instances(number_of_items, R, num_instances);
