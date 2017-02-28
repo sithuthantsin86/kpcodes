@@ -21,3 +21,11 @@ Building software:
    make
 
 
+Contents
+========
+
+knapgen.cpp  -- generator of knapsack instances
+tabdp.cpp -- table based dynamic programming
+tabdpomp.cpp -- parallel (OpenMP) version of tabdp
+
+

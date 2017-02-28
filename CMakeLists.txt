@@ -1,2 +1,6 @@
 project (Knapsack)
 add_executable(knapgen knapgen.cpp)
+add_executable(tabdp tabdp.cpp)
+add_executable(tabdpomp tabdpomp.cpp)
+target_compile_options(tabdpomp PRIVATE -fopenmp)
+target_link_libraries(tabdpomp PRIVATE -fopenmp)
