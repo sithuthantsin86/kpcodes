@@ -49,8 +49,14 @@ void KnapSolver::read(char *file_name) {
 }
 
 void KnapSolver::solve() {
-    int i, j, chunk = 10;
-    a = (int *) malloc((max_w + 1) * obj * sizeof (int));
+     int i, j;
+    const int M = max_w + 1;
+    const int N = obj;
+    a = (int *) malloc(M * N * sizeof (int));
+
+    //#define GETA(i,j) a[(i) * N + (j)]        
+#define GETA(i,j) a[(j) * M + (i)]        
+
     if (a == NULL) {
         cerr << "Error : Your size is too much.\n";
         exit(1);
@@ -60,41 +66,38 @@ void KnapSolver::solve() {
         cerr << "Error : Your size is too much.\n";
         exit(1);
     }
-    ///	#pragma omp parallel private(i,j)
-    //{
     for (j = 0; j < obj; j++) {
 #pragma omp parallel for 
         for (i = 0; i < max_w + 1; i++) {
             if (i < w[j]) {
                 if (i == 0 || j == 0)
-                    a[i * obj + j] = 0;
+                    GETA(i, j) = 0;
                 else
-                    a[i * obj + j] = a[i * obj + j - 1];
+                    GETA(i, j) = GETA(i, j - 1);
             }
             if (i >= w[j]) {
                 if (j == 0)
-                    a[i * obj + j] = p[j];
+                    GETA(i, j) = p[j];
                 else {
                     int k = i - w[j];
-                    if (a[i * obj + j - 1]>(a[k * obj + j - 1] + p[j]))
-                        a[i * obj + j] = a[i * obj + j - 1];
+
+                    if (GETA(i, j - 1) > GETA(k, j - 1) + p[j])
+                        GETA(i, j) = GETA(i, j - 1);
                     else
-                        a[i * obj + j] = a[k * obj + j - 1] + p[j];
+                        GETA(i, j) = GETA(k, j - 1) + p[j];
                 }
 
             }
         }
-        //			#pragma omp barrier
     }
-    //}
     int k = max_w;
     for (int i = obj - 1; i >= 0; i--) {
         if (i == 0) {
-            if (a[k * obj] == 0)
+            if (GETA(k, 0) == 0)
                 x[i] = 0;
             else
                 x[i] = 1;
-        } else if (a[k * obj + i] != a[k * obj + i - 1]) {
+        } else if (GETA(k, i) != GETA(k, i - 1)) {
             x[i] = 1;
             k = k - w[i];
         } else
@@ -121,7 +124,7 @@ void KnapSolver::output() {
             cout<<endl;
     }*/
     //for(int i=0;i<obj;i++)cout<<x[i]<<" ";
-    //cout<<"\n\nThe maximum profit is = "<<a[max_w*obj+obj-1]<<endl;
+    cout << "\n\nThe maximum profit is = " << a[max_w * obj + obj - 1] << endl;
 }
 
 int main(int argc, char* argv[]) {
