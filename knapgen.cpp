@@ -231,11 +231,11 @@ void Instances_generator::Subset_sum_instances(int number_of_items, int R, int n
     std::mt19937 generator(seed);
     std::uniform_int_distribution<int> distribution(1, R);
     for (int j = 0; j < num_instances * alpha_size; j++) {
-        p[0] = w[0] = distribution(generator);
+        p[0] = w[0] = 2 * distribution(generator);
         sum = sum + w[0];
         min = w[0];
         for (int i = 1; i < number_of_items; i++) {
-            p[i] = w[i] = distribution(generator);
+            p[i] = w[i] = 2 * distribution(generator);
             sum = sum + w[i];
             if (min > w[i])min = w[i];
         }
@@ -244,6 +244,8 @@ void Instances_generator::Subset_sum_instances(int number_of_items, int R, int n
         else {
             capacity = min;
         }
+        if(capacity % 2 == 0)
+            capacity ++;
         f = fopen(file_name(M, number_of_items, R, capacity, j + 1).c_str(), "w");
         printPair(f, p, w, number_of_items, capacity);
         fclose(f);

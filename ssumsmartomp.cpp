@@ -81,13 +81,17 @@ void SSumSmartSolver::solve() {
 
         for (int i = 1; i <= obj; i++) {
             int b = nzrb;
+#pragma omp parallel for
             for (int j = 0; j < nzrb; j++) {
                 const int cw = nzr[j] + w[i];
                 if (cw <= C) {
                     if (a[cw] == 0) {
                         a[cw] = i;
-                        nzr[b] = cw;
-                        b++;
+#pragma omp critical 
+                        {
+                            nzr[b] = cw;
+                            b++;
+                        }
                     }
                 }
             }
