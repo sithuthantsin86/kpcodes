@@ -269,7 +269,8 @@ void Instances_generator::Subset_sum_instances_hard(int number_of_items, int R, 
             if (min > w[i])min = w[i];
         }
         C = alpha[j / num_instances] * sum;
-        if (C >= min)capacity = C;
+        if (C >= min)
+            capacity = C;
         else {
             capacity = min;
         }
