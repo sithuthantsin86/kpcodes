@@ -21,6 +21,7 @@ public:
     void Inverse_strongly_correlated_instances(int number_of_items, int R, int num_instances);
     void Almost_strongly_correlated_instances(int number_of_items, int R, int num_instances);
     void Subset_sum_instances(int number_of_items, int R, int num_instances);
+    void Subset_sum_instances_hard(int number_of_items, int R, int num_instances);
     void Uncorrelated_instances_with_similar_weights(int number_of_items, int R, int num_instances);
     void printPair(FILE* f, int *p, int *w, int N, int C);
     string file_name(string method, int N, int R, int C, int num_instance);
@@ -231,6 +232,34 @@ void Instances_generator::Subset_sum_instances(int number_of_items, int R, int n
     std::mt19937 generator(seed);
     std::uniform_int_distribution<int> distribution(1, R);
     for (int j = 0; j < num_instances * alpha_size; j++) {
+        p[0] = w[0] = distribution(generator);
+        sum = sum + w[0];
+        min = w[0];
+        for (int i = 1; i < number_of_items; i++) {
+            p[i] = w[i] = distribution(generator);
+            sum = sum + w[i];
+            if (min > w[i])min = w[i];
+        }
+        C = alpha[j / num_instances] * sum;
+        if (C >= min)capacity = C;
+        else {
+            capacity = min;
+        }
+        f = fopen(file_name(M, number_of_items, R, capacity, j + 1).c_str(), "w");
+        printPair(f, p, w, number_of_items, capacity);
+        fclose(f);
+        sum = 0;
+        min = 0;
+    }
+}
+
+void Instances_generator::Subset_sum_instances_hard(int number_of_items, int R, int num_instances) {
+    string M = "Subset_sum_instances_hard";
+    mkdir("inputs/Subset_sum_instances_hard", 0777);
+    unsigned seed = static_cast<int> (std::chrono::system_clock::now().time_since_epoch().count());
+    std::mt19937 generator(seed);
+    std::uniform_int_distribution<int> distribution(1, R);
+    for (int j = 0; j < num_instances * alpha_size; j++) {
         p[0] = w[0] = 2 * distribution(generator);
         sum = sum + w[0];
         min = w[0];
@@ -298,7 +327,7 @@ int main(int argc, char* argv[]) {
             a_size = atoi(argv[5]);
         }
     } else {
-        fprintf(stderr, "Usage: %s <method> <number of items> <range> <How many instances for each alpha value> <Alpha size>\n---Methods---\nUC = Uncorrelated_data_instances\nWC = Weekly_correlated_instances\nSC = Strongly_correlated_instances\nISC = Inverse_strongly_correlated_instances\nASC = Almost_strongly_correlated_instances\nSS = Subset_sum_instances\nUCS = Uncorrelated_instances_with_similar_weights\n", argv[0]);
+        fprintf(stderr, "Usage: %s <method> <number of items> <range> <How many instances for each alpha value> <Alpha size>\n---Methods---\nUC = Uncorrelated_data_instances\nWC = Weekly_correlated_instances\nSC = Strongly_correlated_instances\nISC = Inverse_strongly_correlated_instances\nASC = Almost_strongly_correlated_instances\nSS = Subset_sum_instances\nSSH = Subset_sum_instances_hard\nUCS = Uncorrelated_instances_with_similar_weights\n", argv[0]);
         exit(-1);
     }
     Instances_generator IG(number_of_items, a_size);
@@ -325,6 +354,10 @@ int main(int argc, char* argv[]) {
     if (method == "SS" || method == "ALL") {
         if (stat("inputs/Subset_sum_instances", &st) == 0)system("rm -r inputs/Subset_sum_instances");
         IG.Subset_sum_instances(number_of_items, R, num_instances);
+    }
+    if (method == "SSH" || method == "ALL") {
+        if (stat("inputs/Subset_sum_instances_hard", &st) == 0)system("rm -r inputs/Subset_sum_instances_hard");
+        IG.Subset_sum_instances_hard(number_of_items, R, num_instances);
     }
     if (method == "UCS" || method == "ALL") {
         if (stat("inputs/Uncorrelated_instances_with_similar_weights", &st) == 0)system("rm -r inputs/Uncorrelated_instances_with_similar_weights");
