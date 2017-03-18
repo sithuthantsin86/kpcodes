@@ -123,9 +123,10 @@ void SSumSmartSolver::solve() {
 }
 
 void SSumSmartSolver::output() {
+    /*
     for (int i = 0; i < obj; i++) {
         std::cout << x[i] << " ";
-    }
+    }*/
     std::cout << "\n";
     std::cout << "\n\nThe maximum weight is = " << maxf << "\n";
 }
