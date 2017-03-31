@@ -111,7 +111,7 @@ void Instances_generator_ss::avis_instances(int number_of_items, int num_instanc
     mkdir("inputs_ss/avis_instances", 0777);
     for (int j = 0; j < num_instances; j++){
         for (int i = 0; i < number_of_items; i++)
-            p[i] = w[i] = number_of_items * (number_of_items + 1) + j; 
+            p[i] = w[i] = number_of_items * (number_of_items + 1) + i;
         capacity = (number_of_items * (number_of_items + 1)) * floor((number_of_items - 1) / 2) + (number_of_items * (number_of_items - 1) / 2);
         d = fopen(file_name(M, number_of_items, capacity, j + 1).c_str(), "w");
         printPair(d, p, w, number_of_items, capacity);
