@@ -103,10 +103,10 @@ void Instances_generator_ss::evenodd_instances(int number_of_items, int num_inst
     // seeds the random number engine, the mersenne_twister_engine
     std::mt19937 generator(seed);
     // set a distribution range (1 - 1000)
-    std::uniform_int_distribution<int> distribution(1, 1000);
+    std::uniform_int_distribution<int> distribution(1, 500);
     for (int j = 0; j < num_instances; j++) {
         for (int i = 0; i < number_of_items; i++)
-            p[i] = w[i] = distribution(generator);
+            p[i] = w[i] = 2 * distribution(generator);
         capacity = 2 * floor(number_of_items * (1000 / 8)) + 1;
         c = fopen(file_name(M, number_of_items, capacity, j + 1).c_str(), "w");
         printPair(c, p, w, number_of_items, capacity);
