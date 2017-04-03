@@ -132,7 +132,7 @@ void Instances_generator_ss::somatoth_instances(int number_of_items, int num_ins
     mkdir("inputs_ss/somatoth_instances", 0777);
     unsigned seed = static_cast<int> (std::chrono::system_clock::now().time_since_epoch().count());
     std::mt19937 generator(seed);
-    std::uniform_int_distribution<int> distribution(1, number_of_items);
+    std::uniform_int_distribution<int> distribution(2, number_of_items);
     for (int j = 0; j < num_instances; j++) {
     	while(count != 1){
     		count = 0;
@@ -157,9 +157,9 @@ void Instances_generator_ss::somatoth_instances(int number_of_items, int num_ins
         }
         for (int i = 0; i < number_of_items; i++) {
             if (i % 2 == 0)
-                p[i] = w[i] = ceil(i / 2) * w1;
+                p[i] = w[i] = ceil((i + 1) / 2.) * w1;
             else
-                p[i] = w[i] = ceil(i / 2) * w2;
+                p[i] = w[i] = ceil((i + 1) / 2.) * w2;
         }
         //cout<<"("<<w1<<", "<<w2<<")"<<endl;
         e = fopen(file_name(M, number_of_items, capacity, j + 1).c_str(), "w");
