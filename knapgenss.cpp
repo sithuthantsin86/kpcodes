@@ -79,11 +79,8 @@ void Instances_generator_ss::pthree_instances(int number_of_items, int num_insta
 void Instances_generator_ss::psix_instances(int number_of_items, int num_instances) {
     string M = "psix_instances";
     mkdir("inputs_ss/psix_instances", 0777);
-    // obtain a seed from the system clock:
     unsigned seed = static_cast<int> (std::chrono::system_clock::now().time_since_epoch().count());
-    // seeds the random number engine, the mersenne_twister_engine
     std::mt19937 generator(seed);
-    // set a distribution range (1 - 1000000)
     std::uniform_int_distribution<int> distribution(1, 1000000);
     for (int j = 0; j < num_instances; j++) {
         for (int i = 0; i < number_of_items; i++)
@@ -96,17 +93,19 @@ void Instances_generator_ss::psix_instances(int number_of_items, int num_instanc
 }
 
 void Instances_generator_ss::evenodd_instances(int number_of_items, int num_instances) {
+	int rand_num = 1;
     string M = "evenodd_instances";
     mkdir("inputs_ss/evenodd_instances", 0777);
-    // obtain a seed from the system clock:
     unsigned seed = static_cast<int> (std::chrono::system_clock::now().time_since_epoch().count());
-    // seeds the random number engine, the mersenne_twister_engine
     std::mt19937 generator(seed);
-    // set a distribution range (1 - 1000)
-    std::uniform_int_distribution<int> distribution(1, 500);
+    std::uniform_int_distribution<int> distribution(1, 1000);
     for (int j = 0; j < num_instances; j++) {
-        for (int i = 0; i < number_of_items; i++)
-            p[i] = w[i] = 2 * distribution(generator);
+        for (int i = 0; i < number_of_items; i++){
+        	while(rand_num%2 > 0)
+            	rand_num = distribution(generator);
+            p[i] = w[i] = rand_num;
+            rand_num = 1;
+        }
         capacity = 2 * floor(number_of_items * (1000 / 8)) + 1;
         c = fopen(file_name(M, number_of_items, capacity, j + 1).c_str(), "w");
         printPair(c, p, w, number_of_items, capacity);
@@ -126,28 +125,47 @@ void Instances_generator_ss::avis_instances(int number_of_items, int num_instanc
 }
 
 void Instances_generator_ss::somatoth_instances(int number_of_items, int num_instances) {
-    int w1 = 0, w2 = 0;
+    int w1 = 0, w2 = 0, count=0;
+    vector<int> a;
+    vector<int> b;
     string M = "somatoth_instances";
     mkdir("inputs_ss/somatoth_instances", 0777);
-    // obtain a seed from the system clock:
     unsigned seed = static_cast<int> (std::chrono::system_clock::now().time_since_epoch().count());
-    // seeds the random number engine, the mersenne_twister_engine
     std::mt19937 generator(seed);
-    // set a distribution range (1 - number_of_items)
     std::uniform_int_distribution<int> distribution(1, number_of_items);
     for (int j = 0; j < num_instances; j++) {
-        for (int i = 0; i < number_of_items; i++) {
-            w1 = distribution(generator);
+    	while(count != 1){
+    		count = 0;
+        	w1 = distribution(generator);
             w2 = distribution(generator);
-            if (j % 2 == 0)
-                p[i] = w[i] = ceil(j / 2) * w1;
-            else
-                p[i] = w[i] = ceil(j / 2) * w2;
+            capacity = (w1 - 1) * (w2 - 1) - 1;
+            if((capacity / w1) < (number_of_items / 2) && (capacity / w2) < (number_of_items / 2)){
+            	for(int k=1; k<=w1; k++){
+            		if(w1%k == 0)
+            			a.push_back (k);
+           		}
+            	for(int l=1; l<=w2; l++){
+            		if(w2%l == 0)
+            			b.push_back (l);
+            	}
+            	for(int i=0; i<a.size(); i++)
+            		for(int j=0; j<b.size(); j++)
+            			if(a[i]==b[j])count++;
+            	a.clear();
+            	b.clear();
+            }
         }
-        capacity = (w1 - 1) * (w2 - 1) - 1;
+        for (int i = 0; i < number_of_items; i++) {
+            if (i % 2 == 0)
+                p[i] = w[i] = ceil(i / 2) * w1;
+            else
+                p[i] = w[i] = ceil(i / 2) * w2;
+        }
+        //cout<<"("<<w1<<", "<<w2<<")"<<endl;
         e = fopen(file_name(M, number_of_items, capacity, j + 1).c_str(), "w");
         printPair(e, p, w, number_of_items, capacity);
         fclose(e);
+        count = 0;
     }
 }
 
