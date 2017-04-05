@@ -20,6 +20,7 @@ public:
     void evenodd_instances(int number_of_items, int num_instances);
     void avis_instances(int number_of_items, int num_instances);
     void somatoth_instances(int number_of_items, int num_instances);
+    void f2_instances(int number_of_items, int num_instances);
     void printPair(FILE* f, int *p, int *w, int N, int C);
     string file_name(string method, int N, int C, int num_instance);
 };
@@ -169,6 +170,57 @@ void Instances_generator_ss::somatoth_instances(int number_of_items, int num_ins
     }
 }
 
+void Instances_generator_ss::f2_instances(int number_of_items, int num_instances) {
+    int w1 = 0, w2 = 0, count=0, E = 0, v = 0, phi = 0;
+    cout<<"Please define the value of E for F2 = ";
+    cin>>E;
+    cout<<"Please define the value of v for F2 = ";
+    cin>>v;
+    cout<<"Please define the value of phi for F2 = ";
+    cin>>phi;
+    vector<int> a;
+    vector<int> b;
+    string M = "f2_instances";
+    mkdir("inputs_ss/f2_instances", 0777);
+    unsigned seed = static_cast<int> (std::chrono::system_clock::now().time_since_epoch().count());
+    std::mt19937 generator(seed);
+    std::uniform_int_distribution<int> distribution(2, pow(10, E));
+    for (int j = 0; j < num_instances; j++) {
+        while(count != 1){
+            count = 0;
+            w1 = distribution(generator);
+            w2 = distribution(generator);
+            capacity = (w1 - 1) * (w2 - 1) - 1;
+            if((phi - v) * pow(10, E) <= capacity && capacity <= phi * pow(10, E)){
+                for(int k=1; k<=w1; k++){
+                    if(w1%k == 0)
+                        a.push_back (k);
+                }
+                for(int l=1; l<=w2; l++){
+                    if(w2%l == 0)
+                        b.push_back (l);
+                }
+                for(int i=0; i<a.size(); i++)
+                    for(int j=0; j<b.size(); j++)
+                        if(a[i]==b[j])count++;
+                a.clear();
+                b.clear();
+            }
+        }
+        for (int i = 1; i <= number_of_items / 2; i++) {
+            if (i % 2 == 0)
+                p[i-1] = w[i-1] = fmod((1 + (i - 1)), floor(capacity / w2)) * w2;
+            else
+                p[i-1] = w[i-1] = fmod((1 + (i - 1)), floor(capacity / w1)) * w1;
+        }
+        cout<<"("<<w1<<", "<<w2<<")"<<endl;
+        e = fopen(file_name(M, number_of_items / 2, capacity, j + 1).c_str(), "w");
+        printPair(e, p, w, number_of_items / 2, capacity);
+        fclose(e);
+        count = 0;
+    }
+}
+
 int main(int argc, char* argv[]) {
     string method;
     struct stat st;
@@ -180,7 +232,7 @@ int main(int argc, char* argv[]) {
             num_instances = atoi(argv[3]);
         }
     } else {
-        fprintf(stderr, "Usage: %s <method> <number of items> <How many instances>\n---Methods---\nP3 = pthree_instances\nP6 = psix_instances\nEO = evenodd_instances\nAV = avis_instances\nST = somatoth_instances\n", argv[0]);
+        fprintf(stderr, "Usage: %s <method> <number of items> <How many instances>\n---Methods---\nP3 = pthree_instances\nP6 = psix_instances\nEO = evenodd_instances\nAV = avis_instances\nST = somatoth_instances\nF2(E, v, phi) = f2_instances", argv[0]);
         exit(-1);
     }
     Instances_generator_ss IG(number_of_items);
@@ -203,6 +255,10 @@ int main(int argc, char* argv[]) {
     if (method == "ST" || method == "ALL") {
         if (stat("inputs_ss/somatoth_instances", &st) == 0)system("rm -r inputs_ss/somatoth_instances");
         IG.somatoth_instances(number_of_items, num_instances);
+    }
+    if (method == "F2" || method == "ALL") {
+        if (stat("inputs_ss/f2_instances", &st) == 0)system("rm -r inputs_ss/f2_instances");
+        IG.f2_instances(number_of_items, num_instances);
     }
     return 0;
 }
