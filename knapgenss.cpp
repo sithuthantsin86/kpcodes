@@ -213,7 +213,7 @@ void Instances_generator_ss::f2_instances(int number_of_items, int num_instances
             else
                 p[i-1] = w[i-1] = fmod((1 + (i - 1)), floor(capacity / w1)) * w1;
         }
-        cout<<"("<<w1<<", "<<w2<<")"<<endl;
+        //cout<<"("<<w1<<", "<<w2<<")"<<endl;
         e = fopen(file_name(M, number_of_items / 2, capacity, j + 1).c_str(), "w");
         printPair(e, p, w, number_of_items / 2, capacity);
         fclose(e);
