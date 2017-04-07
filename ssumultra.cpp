@@ -87,7 +87,7 @@ void SSumSmartSolver::solveVector() {
             for (auto I = nzr.begin(); I != nzr.end();) {
                 const int cc = *I;
                 const int u = cc + rweights[i];
-                if (false /*u <= C*/) {
+                if (u <= C) {
                     if (u > bestF) {
                         int nw = cc;
                         for (int j = i; j <= obj; j++) {
@@ -180,8 +180,8 @@ void SSumSmartSolver::solve() {
         auto purge = [&] {
             if (mones > purgeTresh) {
                 int whead = 0, rhead = 0;
-                while((rhead < nzrb) && (nzr[whead] != -1)) 
-                    rhead ++;
+                while ((rhead < nzrb) && (nzr[whead] != -1))
+                    rhead++;
                 whead = rhead;
                 while (rhead < nzrb) {
                     if (nzr[rhead] == -1) {
@@ -201,21 +201,20 @@ void SSumSmartSolver::solve() {
             int b = nzrb;
             for (int j = 0; j < nzrb; j++) {
                 const int cc = nzr[j];
-                if (cc == -1)
+                if(cc == -1)
                     continue;
-
                 const int u = cc + rweights[i];
                 if (u <= C) {
                     if (u > bestF) {
-                        int nw = cc;
-                        for (int j = i; j <= obj; j++) {
-                            nw += w[j];
-                            a[nw] = j;
-                        }
                         bestF = u;
                     }
+                    int nw = cc;
+                    for (int k = i; k <= obj; k++) {
+                        nw += w[k];
+                        if (a[nw] == 0)
+                            a[nw] = k;
+                    }
                     nzr[j] = -1;
-                    mones++;
                 } else {
                     const int cw = cc + w[i];
                     if (cw <= C) {
@@ -230,7 +229,7 @@ void SSumSmartSolver::solve() {
                 }
             }
             nzrb = b;
-            purge();
+            //purge();
             if (bestF == C)
                 break;
             //printa();
@@ -267,7 +266,7 @@ void SSumSmartSolver::output() {
         std::cout << x[i] << " ";
     }
     std::cout << "\n";
-     */ 
+     */
     std::cout << "\n\nThe maximum weight is = " << maxf << "\n";
 }
 

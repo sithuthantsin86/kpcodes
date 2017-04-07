@@ -134,7 +134,7 @@ void Instances_generator_ss::evenoddvar_instances(int number_of_items, int num_i
         }
         if(j < num_instances/3)capacity = (2 * floor(sum_w / 8)) + 1;
         if(j >= num_instances/3 && j < (num_instances/3)*2)capacity = (2 * floor(sum_w / 4)) + 1;
-        if(j >= (num_instances/3)*2)capacity = (2 * floor(sum_w / 2)) + 1;
+        if(j >= (num_instances/3)*2)capacity = (2 * floor(sum_w / 2)) - 1;
         c = fopen(file_name(M, number_of_items, capacity, j + 1).c_str(), "w");
         printPair(c, p, w, number_of_items, capacity);
         fclose(c);
