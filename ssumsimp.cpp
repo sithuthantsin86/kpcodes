@@ -68,10 +68,10 @@ void SSumSmartSolver::solve() {
             std::cout << "\n";
         };
 
-        a[w[1]] = 1;
-        for (int i = 2; i <= obj; i++) {
-            for (int j = 1; j <= C; j++) {
-                if (a[j]) {
+        a[0] = -1;
+        for (int i = 1; i <= obj; i++) {
+            for (int j = 0; j < size; j++) {
+                if (a[j] && (a[j] != i)) {
                     const int cw = j + w[i];
                     if (cw <= C) {
                         if (a[cw] == 0) {
@@ -80,9 +80,10 @@ void SSumSmartSolver::solve() {
                     }
                 }
             }
+            //printa();
             if (a[C] != 0)
                 break;
-            //printa();
+
         }
 
         int i = size - 1;
