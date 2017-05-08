@@ -8,7 +8,7 @@
 #include <chrono>
 #include <vector>
 #include <algorithm>
-#include <c++/6/chrono>
+#include <chrono>
 
 using namespace std;
 
@@ -80,7 +80,6 @@ void SSumSmartSolver::solve() {
                     }
                 }
             }
-            //printa();
             if (a[C] != 0)
                 break;
 

@@ -8,7 +8,7 @@
 #include <chrono>
 #include <vector>
 #include <algorithm>
-#include <c++/6/chrono>
+#include <chrono>
 
 using namespace std;
 
@@ -71,7 +71,7 @@ void SSumSmartSolver::solve() {
         a[0] = -1;
         for (int i = 1; i <= obj; i++) {
 #pragma omp parallel for            
-            for (int j = 0; j <= C; j++) {
+            for (int j = 0; j < size; j++) {
                 if (a[j] && (a[j] != i)) {
                     const int cw = j + w[i];
                     if (cw <= C) {

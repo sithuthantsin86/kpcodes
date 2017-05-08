@@ -8,7 +8,7 @@
 #include <chrono>
 #include <vector>
 #include <algorithm>
-#include <c++/6/chrono>
+#include <chrono>
 
 using namespace std;
 
@@ -261,8 +261,8 @@ int main(int argc, char* argv[]) {
     //start = omp_get_wtime();
     kp.read(str);
     auto start = std::chrono::high_resolution_clock::now();
-    //kp.solve();
-    kp.solvemt();
+    kp.solve();
+    //kp.solvemt();
     auto end = std::chrono::high_resolution_clock::now();
     kp.output();
     cout << "time in millisecs: " << (std::chrono::duration_cast<chrono::milliseconds>(end - start)).count() << "\n";

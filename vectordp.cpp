@@ -54,66 +54,45 @@ void SSumSmartSolver::solve() {
     int i, j;
     try {
         const int size = C + 1;
-        int* a = new int[size];
-        int* nzr = new int[size];
-        int nzrb = 1;
-        nzr[0] = 0;
+        int* h = new int[size];
         x = new int[xsz];
 
-        std::fill_n(a, size, 0);
-        std::fill_n(x, obj, 0);
+        std::fill_n(h, size, 0);
 
-        auto printa = [&] {
-            std::cout << "a = ";
+        h[0] = 1;
+
+        auto printh = [&] {
+            std::cout << "h = ";
             for (int i = 0; i < size; i++) {
-                std::cout << " " << a[i] << " ";
+                std::cout << " " << h[i] << " ";
             }
             std::cout << "\n";
         };
 
-        auto printnzr = [&] {
-            std::cout << "nzr = ";
-            for (int i = 0; i < nzrb; i++) {
-                std::cout << " " << nzr[i] << " ";
-            }
-            std::cout << "\n";
-        };
-
-        for (int i = 1; i <= obj; i++) {
-            int b = nzrb;
-            for (int j = 0; j < nzrb; j++) {
-                const int cw = nzr[j] + w[i];
-                if (cw <= C) {
-                    if (a[cw] == 0) {
-                        a[cw] = i;
-                        nzr[b] = cw;
-                        b ++;
-                    }
+        int i = 1;
+        while ((i <= obj) && (h[C] == 0)) {
+            const int wi = w[i];
+            for (int c = C; c >= wi; c --) {
+                if ((h[c] == 0) && (h[c - wi] != 0)) {
+                    h[c] = i;
                 }
             }
-            nzrb = b;
-            if (a[C] != 0)
-                break;
-            //printa();
-            //printnzr();
+            i++;
         }
 
-        int i = size - 1;
-        while (i > 0) {
-            if (a[i] != 0) {
-                maxf = i;
+        std::fill_n(x, xsz, 0);
+        int c = C;
+        while (c > 0) {
+            if (h[c] != 0) {
+                maxf = c;
                 break;
             } else
-                i--;
+                c--;
         }
-        while (i > 0) {
-            int j = a[i];
-            if (j != 0) {
-                x[j] = 1;
-                i -= w[j];
-            } else
-                i--;
-            //std::cout << "i = " << i << ", j = " << j << "\n";
+        while (c > 0) {
+            const int j = h[c];
+            x[j] = 1;
+            c -= w[j];
         }
 
     } catch (std::bad_alloc& ba) {
@@ -123,10 +102,11 @@ void SSumSmartSolver::solve() {
 }
 
 void SSumSmartSolver::output() {
-    /*
-    for (int i = 0; i < obj; i++) {
+#if 0    
+    for (int i = 1; i <= obj; i++) {
         std::cout << x[i] << " ";
-    }*/
+    }
+#endif    
     std::cout << "\n";
     std::cout << "\n\nThe maximum weight is = " << maxf << "\n";
 }
