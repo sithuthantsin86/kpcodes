@@ -69,10 +69,16 @@ void SSumSmartSolver::solve() {
             std::cout << "\n";
         };
 
+#if COUNT
+        long long int cnt = 0;
+#endif        
         int i = 1;
         while ((i <= obj) && (h[C] == 0)) {
             const int wi = w[i];
-            for (int c = C; c >= wi; c --) {
+            for (int c = C; c >= wi; c--) {
+#if COUNT
+                cnt++;
+#endif
                 if ((h[c] == 0) && (h[c - wi] != 0)) {
                     h[c] = i;
                 }
@@ -94,7 +100,9 @@ void SSumSmartSolver::solve() {
             x[j] = 1;
             c -= w[j];
         }
-
+#if COUNT        
+        std::cout << "Number of iterations = " << cnt << "\n";
+#endif        
     } catch (std::bad_alloc& ba) {
         std::cerr << "Failed to allocate working arrays " << ba.what() << "\n";
         exit(-1);
