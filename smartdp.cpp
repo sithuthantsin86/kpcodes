@@ -86,10 +86,10 @@ void SSumSmartSolver::solve() {
             int b = nzrb;
             for (int j = 0; j < nzrb; j++) {
                 const int cw = nzr[j] + w[i];
-#if COUNT
-                cnt++;
-#endif        
                 if (cw <= C) {
+#if COUNT
+                    cnt++;
+#endif        
                     if (a[cw] == 0) {
                         a[cw] = i;
                         nzr[b] = cw;

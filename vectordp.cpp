@@ -77,7 +77,7 @@ void SSumSmartSolver::solve() {
             const int wi = w[i];
             for (int c = C; c >= wi; c--) {
 #if COUNT
-                cnt++;
+                    cnt++;
 #endif
                 if ((h[c] == 0) && (h[c - wi] != 0)) {
                     h[c] = i;
